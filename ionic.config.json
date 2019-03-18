@@ -1,5 +1,7 @@
 {
   "name": "ritigalImageTest",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

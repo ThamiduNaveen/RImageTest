@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'home', loadChildren: './home/home.module#HomePageModule' },
+  { path: '', redirectTo: 'photos', pathMatch: 'full' },
+  { path: 'photos', loadChildren: './pages/photos/photos.module#PhotosPageModule' },
+  { path: 'upload-photo', loadChildren: './pages/upload-photo/upload-photo.module#UploadPhotoPageModule' },
 ];
 
 @NgModule({
