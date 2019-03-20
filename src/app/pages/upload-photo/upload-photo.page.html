@@ -9,11 +9,34 @@
 
 <ion-content>
 
-  <ion-button (click)="getPhoto()">
-    get
-  </ion-button>
-  <ion-img [src]="base64Image"></ion-img>
-  
+  <div class="center">
+    <ion-button class="uploadBTN" size="small" shape="round" color="primary" (click)="takePicture()" fill="outline">
+      Upload Photo
+    </ion-button>
+  </div>
+
+  <ion-card>
+    <img [src]="localImageSrc" />
+    <ion-card-content>
+
+      <div>
+        <ion-textarea autofocus="true" value="description" [(ngModel)]="description"></ion-textarea>
+      </div>
+
+      <div > 
+
+        <div class="center">
+          <ion-button color="primary" size="small" shape="round">Upload</ion-button>
+        </div>
+        <div class="center">
+          <ion-button color="primary" size="small" shape="round">Discard</ion-button>
+        </div>
+
+      </div>
+
+
+    </ion-card-content>
+  </ion-card>
 
 
 </ion-content>

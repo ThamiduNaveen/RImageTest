@@ -16,7 +16,13 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { Network } from '@ionic-native/network/ngx';
+
 import { Camera } from '@ionic-native/camera/ngx';
+import { File } from '@ionic-native/File/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
+import { HttpClient } from '@angular/common/http';
+//import { IonicStorageModule } from '@ionic-native/sqlite/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,6 +36,7 @@ import { Camera } from '@ionic-native/camera/ngx';
     AngularFirestoreModule,
     AngularFireStorageModule,
     HttpModule,
+    //IonicStorageModule.forRoot()
   ],
 
   providers: [
@@ -37,7 +44,12 @@ import { Camera } from '@ionic-native/camera/ngx';
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     Network,
-    Camera
+    Camera,
+    File,
+    WebView,
+    FilePath,
+    Storage,
+    HttpClient
   ],
   bootstrap: [AppComponent]
 })
