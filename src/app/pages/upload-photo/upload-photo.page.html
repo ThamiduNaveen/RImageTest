@@ -8,12 +8,19 @@
 </ion-header>
 
 <ion-content>
+  <div class="center">
 
-  <div class="center" *ngIf="!localImageSrc">
-    <ion-button class="uploadBTN" size="small" shape="round" color="primary" (click)="takePicture()" fill="outline">
-      Select Photo
-    </ion-button>
+    <div *ngIf="!localImageSrc && !localImagesSrc.length" class="btn-card">
+      <ion-button class="uploadBTN" size="small" shape="round" color="primary" (click)="takePicture()" fill="outline">
+        Select Photo
+      </ion-button>
+      <ion-button class="uploadBTN" size="small" shape="round" color="primary" (click)="takeMultiple()" fill="outline">
+        Multilpe photos
+      </ion-button>
+    </div>
+
   </div>
+
 
   <ion-card *ngIf="localImageSrc && !uploadingBool">
     <img [src]="localImageSrc" />
@@ -38,15 +45,56 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card *ngIf="uploadingBool">
+  <div *ngIf="localImagesSrc.length  && !uploadingBoolMul">
+
+    <ion-slides [options]="sliderOpts">
+      <ion-slide *ngFor="let image of localImagesSrc; let i = index">
+        <ion-list>
+          <ion-item>
+            <img [src]="image" />
+          </ion-item>
+          <ion-item>
+            <ion-label>Order</ion-label>
+            <ion-select [value]="i+1">
+
+              <ion-select-option [value]="n+1" *ngFor="let image of localImagesSrc; let n = index">{{n+1}}
+              </ion-select-option>
+
+            </ion-select>
+          </ion-item>
+        </ion-list>
+      </ion-slide>
+    </ion-slides>
+
+    <div>
+      <ion-textarea placeholder="Add title for image" [(ngModel)]="title"></ion-textarea>
+    </div>
+
+    <div class="center">
+
+      <div class="btn-card">
+        <ion-button (click)="startMultipleUpload(imagePaths)" color="primary" size="small" shape="round">Upload
+        </ion-button>
+      </div>
+      <div class="btn-card">
+        <ion-button (click)="deleteImageMulitiple()" color="primary" size="small" shape="round">Discard</ion-button>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <ion-card *ngIf="uploadingBool || uploadingBoolMul">
     <ion-card-header>
-      <ion-card-title>Uploading...</ion-card-title>
+      <ion-card-title *ngIf="uploadingBool">Uploading...</ion-card-title>
+      <ion-card-title *ngIf="uploadingBoolMul">Uploading file {{noOfFiles-fileArray.length}} of {{noOfFiles}}
+      </ion-card-title>
       <ion-card-subtitle>{{uploadProgress| number:'1.0-0'}}% complete</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-progress-bar color="secondary" [value]="uploadProgress/100"></ion-progress-bar>
     </ion-card-content>
   </ion-card>
-
 
 </ion-content>

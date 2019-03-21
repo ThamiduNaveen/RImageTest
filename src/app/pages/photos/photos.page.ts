@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Network } from '@ionic-native/network/ngx';
 import { Subscription } from 'rxjs';
 import { ImageModalPage } from '../image-modal/image-modal.page';
+import { AngularFireStorageReference, AngularFireUploadTask, AngularFireStorage } from '@angular/fire/storage';
 
 
 @Component({
@@ -20,12 +21,12 @@ export class PhotosPage implements OnInit {
   private toast: HTMLIonToastElement;
 
 
-  constructor(  private afstore: AngularFirestore,
+  constructor(private afstore: AngularFirestore,
     private toastController: ToastController,
     private router: Router,
     private network: Network,
-    private modalController: ModalController
-
+    private modalController: ModalController,
+    private afStorage: AngularFireStorage,
   ) { }
 
   ngOnInit() {
@@ -35,9 +36,14 @@ export class PhotosPage implements OnInit {
       this.images = obj
     });
   }
-  private deleteVideo(id: string):void {
+  private deleteVideo(id: string): void {
     if (this.network.type !== "none") {
       this.afstore.doc(`Images/panivida/panividaImage/${id}`).delete().then(err => {
+
+        const storagePath = `Images/panivida/${id}`;
+
+        this.afStorage.ref(storagePath).delete();
+
         this.presentToast("successfully Deleted the Image");
       });
     } else {
@@ -50,24 +56,25 @@ export class PhotosPage implements OnInit {
   }
 
   private async presentToast(message: string) {
-    try{
+    try {
       this.toast.dismiss();
-    }catch(err){}
-    finally{
+    } catch (err) { }
+    finally {
       this.toast = await this.toastController.create({
         message: message,
         duration: 3000
       });
       this.toast.present();
     }
-    
+
   }
 
-  openPreview(imageUrl:string) {
+  openPreview(imageUrl: string, imageChilds: string[]) {
     this.modalController.create({
       component: ImageModalPage,
       componentProps: {
-        imageUrl: imageUrl
+        imageUrl: imageUrl,
+        imageChilds: imageChilds
       }
     }).then(modal => {
       modal.present();

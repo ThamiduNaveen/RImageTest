@@ -17,14 +17,20 @@
       </ion-button>
     </ion-item>
    
-    <ion-slides [options]="sliderOpts" #slider>
-      <ion-slide>
+    <ion-slides [options]="sliderOpts" #slider *ngIf="imageChilds">
+      <ion-slide *ngFor="let image of imageChilds">
         <div class="swiper-zoom-container">
-          <img [src]="imageUrl">
+          <img [src]="image">
         </div>
       </ion-slide>
     </ion-slides>
-
+    <ion-slides [options]="sliderOpts" #slider *ngIf="!imageChilds">
+        <ion-slide>
+          <div class="swiper-zoom-container">
+            <img [src]="imageUrl">
+          </div>
+        </ion-slide>
+      </ion-slides>
     
    
   </ion-content>

@@ -23,6 +23,7 @@ import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { HttpClient } from '@angular/common/http';
 import { ImageModalPageModule } from './pages/image-modal/image-modal.module';
+import { ImagePicker } from '@ionic-native/image-picker/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -50,7 +51,8 @@ import { ImageModalPageModule } from './pages/image-modal/image-modal.module';
     WebView,
     FilePath,
     Storage,
-    HttpClient
+    HttpClient,
+    ImagePicker
   ],
   bootstrap: [AppComponent]
 })

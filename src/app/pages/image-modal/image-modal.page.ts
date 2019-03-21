@@ -10,6 +10,7 @@ export class ImageModalPage implements OnInit {
 
   @ViewChild('slider', { read: ElementRef })slider: ElementRef;
   imageUrl: string;
+  imageChilds:string[];
 
   sliderOpts = {
     zoom: {
@@ -21,6 +22,8 @@ export class ImageModalPage implements OnInit {
 
   ngOnInit() {
     this.imageUrl = this.navParams.get('imageUrl');
+    this.imageChilds = this.navParams.get('imageChilds');
+
   }
 
   zoom(zoomIn: boolean) {
