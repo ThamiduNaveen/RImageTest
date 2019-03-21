@@ -9,32 +9,42 @@
 
 <ion-content>
 
-  <div class="center">
+  <div class="center" *ngIf="!localImageSrc">
     <ion-button class="uploadBTN" size="small" shape="round" color="primary" (click)="takePicture()" fill="outline">
-      Upload Photo
+      Select Photo
     </ion-button>
   </div>
 
-  <ion-card>
+  <ion-card *ngIf="localImageSrc && !uploadingBool">
     <img [src]="localImageSrc" />
     <ion-card-content>
 
       <div>
-        <ion-textarea autofocus="true" value="description" [(ngModel)]="description"></ion-textarea>
+        <ion-textarea autofocus="true" placeholder="Add title for image" [(ngModel)]="title"></ion-textarea>
       </div>
 
-      <div > 
+      <div class="center">
 
-        <div class="center">
-          <ion-button color="primary" size="small" shape="round">Upload</ion-button>
+        <div class="btn-card">
+          <ion-button (click)="startUpload()" color="primary" size="small" shape="round">Upload</ion-button>
         </div>
-        <div class="center">
-          <ion-button color="primary" size="small" shape="round">Discard</ion-button>
+        <div class="btn-card">
+          <ion-button (click)="deleteImage()" color="primary" size="small" shape="round">Discard</ion-button>
         </div>
 
       </div>
 
 
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="uploadingBool">
+    <ion-card-header>
+      <ion-card-title>Uploading...</ion-card-title>
+      <ion-card-subtitle>{{uploadProgress| number:'1.0-0'}}% complete</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-progress-bar color="secondary" [value]="uploadProgress/100"></ion-progress-bar>
     </ion-card-content>
   </ion-card>
 

@@ -5,11 +5,29 @@
 </ion-header>
 
 <ion-content no-padding>
-  
+
   <div class="center">
-    <ion-button class="uploadBTN" size="small" shape="round" color="primary"
-      routerLink="/upload-photo" fill="outline">Upload Photo
+    <ion-button class="uploadBTN" size="small" shape="round" color="primary" routerLink="/upload-photo" fill="outline">
+      Upload Photo
     </ion-button>
   </div>
+
+
+
+  <ion-card *ngFor="let image of images">
+    <ion-card-header>
+      <ion-card-title>{{image.title}}</ion-card-title>
+      <ion-fab vertical="top" horizontal="end" class="fab">
+        <ion-fab-button (click)="deleteVideo(image.id) ; $event.stopPropagation();" color="light" class="fabBTN">
+          <ion-icon name="trash"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
+
+    </ion-card-header>
+    <ion-card-content>
+      <img item-start [src]="image.url" tappable (click)="openPreview(image.url)" />
+    </ion-card-content>
+  </ion-card>
+
 
 </ion-content>
