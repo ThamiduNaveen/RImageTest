@@ -55,7 +55,7 @@
           </ion-item>
           <ion-item>
             <ion-label>Order</ion-label>
-            <ion-select [value]="i+1">
+            <ion-select [(ngModel)]="orderArray[i]" (ngModelChange)="makeOrder(i,orderArray[i])">
 
               <ion-select-option [value]="n+1" *ngFor="let image of localImagesSrc; let n = index">{{n+1}}
               </ion-select-option>
@@ -88,7 +88,7 @@
   <ion-card *ngIf="uploadingBool || uploadingBoolMul">
     <ion-card-header>
       <ion-card-title *ngIf="uploadingBool">Uploading...</ion-card-title>
-      <ion-card-title *ngIf="uploadingBoolMul">Uploading file {{noOfFiles-fileArray.length}} of {{noOfFiles}}
+      <ion-card-title *ngIf="uploadingBoolMul">Uploading image {{noOfFiles-fileArray.length}} of {{noOfFiles}}
       </ion-card-title>
       <ion-card-subtitle>{{uploadProgress| number:'1.0-0'}}% complete</ion-card-subtitle>
     </ion-card-header>

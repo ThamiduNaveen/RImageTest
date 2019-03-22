@@ -18,7 +18,8 @@
     <ion-card-header>
       <ion-card-title>{{image.title}}</ion-card-title>
       <ion-fab vertical="top" horizontal="end" class="fab">
-        <ion-fab-button (click)="deleteVideo(image.id) ; $event.stopPropagation();" color="light" class="fabBTN">
+        <ion-fab-button (click)="deleteImage(image.id,image.childs) ; $event.stopPropagation();" color="light"
+          class="fabBTN">
           <ion-icon name="trash"></ion-icon>
         </ion-fab-button>
       </ion-fab>

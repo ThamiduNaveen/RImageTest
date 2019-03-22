@@ -50,6 +50,7 @@ export class UploadPhotoPage implements OnInit {
   private noOfFiles: number = 0;
   private downloadUrls: string[] = [];
   private uploadingBoolMul: boolean = false;
+  private orderArray: number[] = [];
 
 
   constructor(
@@ -78,7 +79,6 @@ export class UploadPhotoPage implements OnInit {
 
   private takePicture(): void {
 
-    this.presentLoading('Please wait..');
     this.camera.getPicture(this.options).then(imagePath => {
       if (this.platform.is('android')) {
 
@@ -109,9 +109,9 @@ export class UploadPhotoPage implements OnInit {
   private copyFileToLocalDir(namePath: string, currentName: string, newFileName: string): void {
     this.file.copyFile(namePath, currentName, this.file.dataDirectory, newFileName).then(success => {
       this.localImageSrc = this.pathForImage(this.imageName);
-      this.loadingElement.dismiss();
+      //this.loadingElement.dismiss();
     }, error => {
-      this.loadingElement.dismiss();
+      //this.loadingElement.dismiss();
       this.presentToast('Error while loading the image.');
     });
   }
@@ -189,7 +189,7 @@ export class UploadPhotoPage implements OnInit {
         type: file.type
       });
 
-      const storagePath = `Images/panivida/${this.imageName}.jpg`;
+      const storagePath = `Images/panivida/${this.imageName}`;
 
       const ref: AngularFireStorageReference = this.afStorage.ref(storagePath);
       const task: AngularFireUploadTask = ref.put(imgBlob);
@@ -231,7 +231,7 @@ export class UploadPhotoPage implements OnInit {
 
   }
 
-  private databaseUpdate():void {
+  private databaseUpdate(): void {
     this.afstore.doc(`Images/panivida/panividaImage/${this.imageName}`).set({
 
       title: this.title,
@@ -250,7 +250,7 @@ export class UploadPhotoPage implements OnInit {
 
   }
 
-  private multipleDatabaseUpdate():void {
+  private multipleDatabaseUpdate(): void {
     this.afstore.doc(`Images/panivida/panividaImage/${this.imageName}`).set({
 
       title: this.title,
@@ -264,23 +264,24 @@ export class UploadPhotoPage implements OnInit {
       this.presentToast('Uploading Successful');
       this.route.navigate(['/photos'])
 
-    }).catch(err=>{
-      this.presentToast('Error updating the database :'+err.message);
+    }).catch(err => {
+      this.presentToast('Error updating the database :' + err.message);
     });
   }
 
-  private takeMultiple():void {
+  private takeMultiple(): void {
 
 
     this.imagePicker.getPictures(this.options).then((imagePaths) => {
       if (imagePaths.length > 1) {
         this.imageName = this.createFileName();
         this.imagePaths = imagePaths;
-
+        this.noOfFiles = imagePaths.length;
         this.imageName = this.createFileName();
 
         for (var i = 0; i < imagePaths.length; i++) {
-          this.localImagesSrc.push(this.webview.convertFileSrc(imagePaths[i]))
+          this.localImagesSrc[i] = this.webview.convertFileSrc(imagePaths[i]);
+          this.orderArray[i] = i + 1;
         }
 
       } else if (imagePaths.length == 1) {
@@ -301,6 +302,7 @@ export class UploadPhotoPage implements OnInit {
   private deleteImageMulitiple(): void {
 
     this.downloadUrls = [];
+    this.orderArray = [];
     this.title = "";
     this.uploadingBoolMul = false;
     this.localImagesSrc = [];
@@ -325,7 +327,7 @@ export class UploadPhotoPage implements OnInit {
     }
 
   }
-
+  
   private startMultipleUpload(imagePaths: string[]): void {
 
 
@@ -334,19 +336,21 @@ export class UploadPhotoPage implements OnInit {
 
       if (imagePaths.length) {
 
-        this.file.resolveLocalFilesystemUrl(imagePaths.pop())
+        this.file.resolveLocalFilesystemUrl(imagePaths.shift())
           .then(entry => {
             this.uploadingBoolMul = true;
             (<FileEntry>entry).file(file => {
-              this.fileArray.push(file);
+
+              this.fileArray[this.orderArray[this.noOfFiles - imagePaths.length - 1] - 1] = file;
+
+
               if (imagePaths.length) {
                 this.startMultipleUpload(imagePaths);
               } else {
-                this.noOfFiles = this.fileArray.length;
-                this.multipleUpload(this.fileArray);
+                this.multipleUpload(this.fileArray.reverse());
               }
 
-            })
+            });
 
           })
           .catch(err => {
@@ -362,7 +366,7 @@ export class UploadPhotoPage implements OnInit {
 
   }
 
-  private multipleUpload(fileArray: IFile[]):void {
+  private multipleUpload(fileArray: IFile[]): void {
 
     if (fileArray.length) {
       let file: IFile = fileArray.pop()
@@ -425,6 +429,23 @@ export class UploadPhotoPage implements OnInit {
       this.presentToast("done putha");
     }
   }
+
+  private makeOrder(index: number, newVal: number): void {
+    const startIndex = this.orderArray.indexOf(newVal);
+    const endIndex = this.orderArray.lastIndexOf(newVal);
+    let orderArrayLack = 1;
+    for (let i = 0; i < this.orderArray.length; i++) {
+      if (this.orderArray.indexOf(i + 1) === -1) {
+        orderArrayLack = i + 1;
+      }
+    }
+    if (index === startIndex) {
+      this.orderArray[endIndex] = orderArrayLack;
+    } else if (index === endIndex) {
+      this.orderArray[startIndex] = orderArrayLack;
+    }
+  }
+
 
 }
 

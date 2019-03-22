@@ -36,13 +36,20 @@ export class PhotosPage implements OnInit {
       this.images = obj
     });
   }
-  private deleteVideo(id: string): void {
+  private deleteImage(id: string, childs: string[]): void {
     if (this.network.type !== "none") {
       this.afstore.doc(`Images/panivida/panividaImage/${id}`).delete().then(err => {
 
-        const storagePath = `Images/panivida/${id}`;
+        if (childs) {
+          for (let i = 0; i < childs.length; i++) {
+            const storagePath = `Images/panivida/${id}/${i.toString()}.jpg`;
+            this.afStorage.ref(storagePath).delete();
+          }
+        } else {
+          const storagePath = `Images/panivida/${id}`;
+          this.afStorage.ref(storagePath).delete();
+        }
 
-        this.afStorage.ref(storagePath).delete();
 
         this.presentToast("successfully Deleted the Image");
       });
