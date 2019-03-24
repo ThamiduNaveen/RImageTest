@@ -19,7 +19,7 @@
    
     <ion-slides [options]="sliderOpts" #slider *ngIf="imageChilds">
       <ion-slide *ngFor="let image of imageChilds">
-        <div class="swiper-zoom-container">
+        <div class="swiper-zoom-container" >
           <img [src]="image">
         </div>
       </ion-slide>

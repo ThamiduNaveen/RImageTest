@@ -24,6 +24,10 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 import { HttpClient } from '@angular/common/http';
 import { ImageModalPageModule } from './pages/image-modal/image-modal.module';
 import { ImagePicker } from '@ionic-native/image-picker/ngx';
+import { IonicImageLoader } from 'ionic-image-loader';
+import { FileTransfer} from '@ionic-native/file-transfer/ngx';
+
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,7 +41,9 @@ import { ImagePicker } from '@ionic-native/image-picker/ngx';
     AngularFirestoreModule,
     AngularFireStorageModule,
     HttpModule,
-    ImageModalPageModule
+    ImageModalPageModule,
+    IonicImageLoader.forRoot(),
+    
     //IonicStorageModule.forRoot()
   ],
 
@@ -52,7 +58,8 @@ import { ImagePicker } from '@ionic-native/image-picker/ngx';
     FilePath,
     Storage,
     HttpClient,
-    ImagePicker
+    ImagePicker,
+    FileTransfer
   ],
   bootstrap: [AppComponent]
 })

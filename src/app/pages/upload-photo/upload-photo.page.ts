@@ -11,6 +11,8 @@ import { Observable, Subscription } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { ImagePicker } from '@ionic-native/image-picker/ngx';
+import { Network } from '@ionic-native/network/ngx';
+
 
 const NAME: string = "upload.jpg"
 
@@ -65,7 +67,8 @@ export class UploadPhotoPage implements OnInit {
     private ngZone: NgZone,
     private afstore: AngularFirestore,
     private route: Router,
-    private imagePicker: ImagePicker
+    private imagePicker: ImagePicker,
+    private network: Network,
   ) { }
 
   ngOnInit() {
@@ -166,19 +169,26 @@ export class UploadPhotoPage implements OnInit {
   }
 
   private startUpload(): void {
-    if (this.title.trim()) {
-      let filePath: string = this.file.dataDirectory + this.imageName;
-      this.file.resolveLocalFilesystemUrl(filePath)
-        .then(entry => {
-          this.uploadingBool = true;
-          (<FileEntry>entry).file(file => this.readFile(file))
-        })
-        .catch(err => {
-          this.presentToast('Error while reading file.');
-        });
+
+    if (this.network.type !== "none") {
+
+      if (this.title.trim()) {
+        let filePath: string = this.file.dataDirectory + this.imageName;
+        this.file.resolveLocalFilesystemUrl(filePath)
+          .then(entry => {
+            this.uploadingBool = true;
+            (<FileEntry>entry).file(file => this.readFile(file))
+          })
+          .catch(err => {
+            this.presentToast('Error while reading file.');
+          });
+      } else {
+        this.presentToast('Please enter tiltle for the image.');
+      }
     } else {
-      this.presentToast('Please enter tiltle for the image.');
+      this.presentToast('Please check your internet connection.');
     }
+
   }
 
   private readFile(file: any): void {
@@ -271,7 +281,6 @@ export class UploadPhotoPage implements OnInit {
 
   private takeMultiple(): void {
 
-
     this.imagePicker.getPictures(this.options).then((imagePaths) => {
       if (imagePaths.length > 1) {
         this.imageName = this.createFileName();
@@ -327,41 +336,45 @@ export class UploadPhotoPage implements OnInit {
     }
 
   }
-  
+
   private startMultipleUpload(imagePaths: string[]): void {
 
+    if (this.network.type !== "none") {
 
-    if (this.title.trim()) {
-
-
-      if (imagePaths.length) {
-
-        this.file.resolveLocalFilesystemUrl(imagePaths.shift())
-          .then(entry => {
-            this.uploadingBoolMul = true;
-            (<FileEntry>entry).file(file => {
-
-              this.fileArray[this.orderArray[this.noOfFiles - imagePaths.length - 1] - 1] = file;
+      if (this.title.trim()) {
 
 
-              if (imagePaths.length) {
-                this.startMultipleUpload(imagePaths);
-              } else {
-                this.multipleUpload(this.fileArray.reverse());
-              }
+        if (imagePaths.length) {
+
+          this.file.resolveLocalFilesystemUrl(imagePaths.shift())
+            .then(entry => {
+              this.uploadingBoolMul = true;
+              (<FileEntry>entry).file(file => {
+
+                this.fileArray[this.orderArray[this.noOfFiles - imagePaths.length - 1] - 1] = file;
+
+
+                if (imagePaths.length) {
+                  this.startMultipleUpload(imagePaths);
+                } else {
+                  this.multipleUpload(this.fileArray.reverse());
+                }
+
+              });
+
+            })
+            .catch(err => {
+              this.presentToast('Error while reading file.');
 
             });
 
-          })
-          .catch(err => {
-            this.presentToast('Error while reading file.');
+        }
 
-          });
-
+      } else {
+        this.presentToast('Please enter tiltle for the image.');
       }
-
     } else {
-      this.presentToast('Please enter tiltle for the image.');
+      this.presentToast('Please check your internet connection.');
     }
 
   }

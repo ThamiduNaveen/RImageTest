@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { ImageModalPage } from './image-modal.page';
+import { IonicImageLoader } from 'ionic-image-loader';
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
+    IonicImageLoader,
     CommonModule,
     FormsModule,
     IonicModule,

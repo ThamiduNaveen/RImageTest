@@ -13,7 +13,6 @@
   </div>
 
 
-
   <ion-card *ngFor="let image of images">
     <ion-card-header>
       <ion-card-title>{{image.title}}</ion-card-title>
@@ -26,9 +25,8 @@
 
     </ion-card-header>
     <ion-card-content>
-      <img item-start [src]="image.url" tappable (click)="openPreview(image.url,image.childs)" />
+      <img item-start [src]="image.src" tappable (click)="openPreview(image.src,image.childs)" *ngIf="image.src">
     </ion-card-content>
   </ion-card>
-
 
 </ion-content>

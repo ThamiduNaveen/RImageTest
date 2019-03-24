@@ -6,7 +6,9 @@ import { Network } from '@ionic-native/network/ngx';
 import { Subscription } from 'rxjs';
 import { ImageModalPage } from '../image-modal/image-modal.page';
 import { AngularFireStorageReference, AngularFireUploadTask, AngularFireStorage } from '@angular/fire/storage';
-
+import { File } from '@ionic-native/File/ngx';
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
 
 @Component({
   selector: 'app-photos',
@@ -17,24 +19,37 @@ export class PhotosPage implements OnInit {
 
   private postReferance: AngularFirestoreCollection<{}>;
   private postReferanceSub: Subscription;
-  private images: {}[];
+  private images: { id: string, title: string, url: string, src: string }[];
   private toast: HTMLIonToastElement;
 
+  private fileTransfer: FileTransferObject = this.transfer.create();
 
   constructor(private afstore: AngularFirestore,
     private toastController: ToastController,
     private router: Router,
     private network: Network,
-    private modalController: ModalController,
     private afStorage: AngularFireStorage,
-  ) { }
+    private transfer: FileTransfer,
+    private file: File,
+    private webview: WebView,
+    private modalController: ModalController,
+  ) {
+    this.postReferance = this.afstore.collection(`Images/panivida/panividaImage`);
+    this.postReferanceSub = this.postReferance.valueChanges().subscribe((obj: any[]) => {
+      this.images = obj
+      this.makeSrc();
+    });
+
+
+  }
+  async makeSrc() {
+    this.images.forEach(image => {
+      this.getImage(image);
+    })
+  }
 
   ngOnInit() {
-    this.postReferance = this.afstore.collection(`Images/panivida/panividaImage`);
-    this.postReferanceSub = this.postReferance.valueChanges().subscribe(obj => {
-      //console.log(obj);
-      this.images = obj
-    });
+
   }
   private deleteImage(id: string, childs: string[]): void {
     if (this.network.type !== "none") {
@@ -76,7 +91,8 @@ export class PhotosPage implements OnInit {
 
   }
 
-  openPreview(imageUrl: string, imageChilds: string[]) {
+  private openPreview(imageUrl: string, imageChilds: string[]) {
+
     this.modalController.create({
       component: ImageModalPage,
       componentProps: {
@@ -87,5 +103,38 @@ export class PhotosPage implements OnInit {
       modal.present();
     });
   }
+
+  private getImage(image: { id: string, title: string, url: string, src: string }) {
+    this.file.checkFile(this.file.dataDirectory, image.id).then(isExist => {
+      if (isExist.valueOf()) {
+
+        //this.presentToast("availabe");
+        image.src = this.webview.convertFileSrc(this.file.dataDirectory + image.id);
+      } else {
+        this.presentToast("unexpceted place");
+      }
+
+    }).catch(err => {
+
+      //this.presentToast(err.message);
+
+      if (err.message === "NOT_FOUND_ERR") {
+        this.fileTransfer.download(image.url, this.file.dataDirectory + image.id).then((entry) => {
+
+          image.src = this.webview.convertFileSrc(entry.toURL());
+
+        }, (error) => {
+          this.presentToast(error.message)
+          image.src = image.url;
+        });
+
+      } else {
+        this.presentToast("unexpceted place 2");
+      }
+
+    })
+
+  }
+
 
 }
