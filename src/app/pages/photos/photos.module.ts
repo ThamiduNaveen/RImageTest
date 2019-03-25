@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { PhotosPage } from './photos.page';
 
 import { IonicImageLoader } from 'ionic-image-loader';
+import { ImageFilterPipe } from 'src/app/pipes/image-filter.pipe';
 
 const routes: Routes = [
   {
@@ -24,6 +25,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [PhotosPage]
+  declarations: [PhotosPage, ImageFilterPipe]
 })
 export class PhotosPageModule {}

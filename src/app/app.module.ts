@@ -27,6 +27,10 @@ import { ImagePicker } from '@ionic-native/image-picker/ngx';
 import { IonicImageLoader } from 'ionic-image-loader';
 import { FileTransfer} from '@ionic-native/file-transfer/ngx';
 
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { IonicStorageModule } from '@ionic/storage';
+//import { ImageFilterPipe } from './pipes/image-filter.pipe';
+
 
 
 @NgModule({
@@ -44,7 +48,7 @@ import { FileTransfer} from '@ionic-native/file-transfer/ngx';
     ImageModalPageModule,
     IonicImageLoader.forRoot(),
     
-    //IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot()
   ],
 
   providers: [
@@ -59,7 +63,8 @@ import { FileTransfer} from '@ionic-native/file-transfer/ngx';
     Storage,
     HttpClient,
     ImagePicker,
-    FileTransfer
+    FileTransfer,
+    SocialSharing,
   ],
   bootstrap: [AppComponent]
 })

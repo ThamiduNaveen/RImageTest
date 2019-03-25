@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Image</ion-title>
+    <ion-searchbar placeholder="Search panivida" [(ngModel)]="filterText"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -13,20 +13,37 @@
   </div>
 
 
-  <ion-card *ngFor="let image of images">
+  <ion-card *ngFor="let image of (images|imageFilter:filterText) ; let i = index">
     <ion-card-header>
       <ion-card-title>{{image.title}}</ion-card-title>
       <ion-fab vertical="top" horizontal="end" class="fab">
-        <ion-fab-button (click)="deleteImage(image.id,image.childs) ; $event.stopPropagation();" color="light"
-          class="fabBTN">
-          <ion-icon name="trash"></ion-icon>
-        </ion-fab-button>
+
+        <ion-row>
+
+          <ion-col>
+            <ion-fab-button (click)="deleteImage(image.id,image.childs) ; $event.stopPropagation();" color="light"
+              class="fabBTN">
+              <ion-icon name="trash"></ion-icon>
+            </ion-fab-button>
+          </ion-col>
+
+          <ion-col>
+            <ion-fab-button (click)="share(image.id,image.title,image.childs) ; $event.stopPropagation();" color="light"
+              class="fabBTN">
+              <ion-icon name="share"></ion-icon>
+            </ion-fab-button>
+          </ion-col>
+
+        </ion-row>
       </ion-fab>
 
     </ion-card-header>
     <ion-card-content>
-      <img item-start [src]="image.src" tappable (click)="openPreview(image.src,image.childs)" *ngIf="image.src">
+      <ion-img item-start [src]="image.src" tappable (click)="openPreview(image.src,image.id,image.childs)"
+        *ngIf="image.src"></ion-img>
+      <ion-label *ngIf="image.childs">This is a multi-panivida click to view</ion-label>
     </ion-card-content>
   </ion-card>
+
 
 </ion-content>

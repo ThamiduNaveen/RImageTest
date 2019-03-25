@@ -9,6 +9,10 @@ import { AngularFireStorageReference, AngularFireUploadTask, AngularFireStorage 
 import { File } from '@ionic-native/File/ngx';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { Storage } from '@ionic/storage';
+
+const STORAGE_KEY = 'images';
 
 @Component({
   selector: 'app-photos',
@@ -19,10 +23,17 @@ export class PhotosPage implements OnInit {
 
   private postReferance: AngularFirestoreCollection<{}>;
   private postReferanceSub: Subscription;
-  private images: { id: string, title: string, url: string, src: string }[];
+  private images: {
+    id: string,
+    title: string,
+    url: string,
+    src: string
+  }[];
   private toast: HTMLIonToastElement;
-
+  private DATA_DIRECTORY: string = this.file.dataDirectory;
   private fileTransfer: FileTransferObject = this.transfer.create();
+  private imageIDArr: string[] = [];
+  private filterText: string = '';
 
   constructor(private afstore: AngularFirestore,
     private toastController: ToastController,
@@ -33,20 +44,45 @@ export class PhotosPage implements OnInit {
     private file: File,
     private webview: WebView,
     private modalController: ModalController,
+    private socialSharing: SocialSharing,
+    private storage: Storage
   ) {
     this.postReferance = this.afstore.collection(`Images/panivida/panividaImage`);
     this.postReferanceSub = this.postReferance.valueChanges().subscribe((obj: any[]) => {
       this.images = obj
-      this.makeSrc();
+      this.storage.get(STORAGE_KEY).then(imageIDs => {
+        if (imageIDs) {
+          this.imageIDArr = imageIDs;
+        }
+        this.makeUrl();
+      });
+    });
+  }
+
+  private async makeUrl() {
+    this.images.forEach(image => {
+      if (this.imageIDArr.includes(image.id)) {
+
+        //this.presentToast("availabe");
+        image.src = this.webview.convertFileSrc(this.DATA_DIRECTORY + image.id);
+
+      } else {
+
+        //this.presentToast("not availabe");
+        this.fileTransfer.download(image.url, this.DATA_DIRECTORY + image.id).then((entry) => {
+
+          image.src = this.webview.convertFileSrc(entry.toURL());
+          this.imageIDArr.push(image.id);
+          this.storage.set(STORAGE_KEY, this.imageIDArr);
+
+        }, (error) => {
+          this.presentToast(error.message);
+        });
+      }
     });
 
+  }
 
-  }
-  async makeSrc() {
-    this.images.forEach(image => {
-      this.getImage(image);
-    })
-  }
 
   ngOnInit() {
 
@@ -91,50 +127,38 @@ export class PhotosPage implements OnInit {
 
   }
 
-  private openPreview(imageUrl: string, imageChilds: string[]) {
+  private openPreview(imageUrl: string, id: string, imageChilds: string[]) {
 
     this.modalController.create({
       component: ImageModalPage,
       componentProps: {
         imageUrl: imageUrl,
-        imageChilds: imageChilds
+        imageChilds: imageChilds,
+        id: id
       }
     }).then(modal => {
       modal.present();
     });
   }
+  async share(id: string, message: string, childs: string[]) {
+    if (childs) {
+      this.file.checkFile(this.DATA_DIRECTORY, id + (childs.length - 1).toString() + ".jpg").then(async (res) => {
+        let resfileArr: any[] = [];
+        resfileArr[0] = (await this.file.resolveLocalFilesystemUrl(this.DATA_DIRECTORY + id)).nativeURL;
+        for (let i = 1; i < childs.length; i++) {
+          resfileArr[i] = (await this.file.resolveLocalFilesystemUrl(this.DATA_DIRECTORY + id + i.toString() + ".jpg")).nativeURL;
+        }
+        this.socialSharing.share(message, null, resfileArr, null);
+      }).catch(err => {
+        this.presentToast("please view all photos before share")
+      });
 
-  private getImage(image: { id: string, title: string, url: string, src: string }) {
-    this.file.checkFile(this.file.dataDirectory, image.id).then(isExist => {
-      if (isExist.valueOf()) {
-
-        //this.presentToast("availabe");
-        image.src = this.webview.convertFileSrc(this.file.dataDirectory + image.id);
-      } else {
-        this.presentToast("unexpceted place");
-      }
-
-    }).catch(err => {
-
-      //this.presentToast(err.message);
-
-      if (err.message === "NOT_FOUND_ERR") {
-        this.fileTransfer.download(image.url, this.file.dataDirectory + image.id).then((entry) => {
-
-          image.src = this.webview.convertFileSrc(entry.toURL());
-
-        }, (error) => {
-          this.presentToast(error.message)
-          image.src = image.url;
-        });
-
-      } else {
-        this.presentToast("unexpceted place 2");
-      }
-
-    })
-
+    } else {
+      let resfile = await this.file.resolveLocalFilesystemUrl(this.DATA_DIRECTORY + id);
+      this.socialSharing.share(message, null, resfile.nativeURL, null);
+    }
   }
+
 
 
 }
