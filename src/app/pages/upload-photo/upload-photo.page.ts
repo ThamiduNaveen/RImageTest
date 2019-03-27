@@ -461,18 +461,4 @@ export class UploadPhotoPage implements OnInit {
 
 }
 
-// this.storage.get(STORAGE_KEY).then((imageIDs: string[]) => {
-//   let newImageIds: string[] = [];
-//   if (imageIDs) {
-//     newImageIds=imageIDs;
-//   }
-//   newImageIds.push(this.imageName);
-//   this.storage.set(STORAGE_KEY, newImageIds);
-//   this.downloadUrl = "";
-//   this.title = "";
-//   this.uploadingBool = false;
-//   this.deleteImage();
-//   this.presentToast('Uploading Successful');
-//   this.route.navigate(['/photos'])
-
 

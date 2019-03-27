@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Set Date</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+
+  <ion-grid>
+    <ion-row color="primary" justify-content-center>
+      <ion-col>
+        <div text-center>
+          <h4>Fix a date</h4>
+        </div>
+        <div padding>
+          <ion-item>
+            <ion-label>Date : </ion-label>
+            <ion-datetime [(ngModel)]="fixedDate" max="2050" picker-format="YYYY-MM-DDDD"
+              displayFormat="DDD, DD MMM YYYY" (ionChange)="CheckValidtyDate(fixedDate)" placeholder="Select Date">
+            </ion-datetime>
+          </ion-item>
+          <ion-item>
+            <ion-label>From : </ion-label>
+            <ion-datetime [(ngModel)]="startTime" picker-format="hh:mm A" displayFormat="hh:mm A"
+              placeholder="Select Time"></ion-datetime>
+
+          </ion-item>
+          <ion-item>
+            <ion-label>To : </ion-label>
+            <ion-datetime [(ngModel)]="endTime" picker-format="hh:mm A" displayFormat="hh:mm A"
+              placeholder="Select Time"></ion-datetime>
+
+          </ion-item>
+          <ion-item>
+            <ion-label>Appoinments : </ion-label>
+            <ion-input [(ngModel)]="appoinments" type="number" placeholder="Enter Number"></ion-input>
+          </ion-item>
+        </div>
+        <div padding>
+          <ion-button size="medium" expand="block" (click)="submit(fixedDate,startTime,endTime,appoinments)">Submit
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

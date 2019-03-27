@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Book a date</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content padding>
+  <div class="center">
+    <ion-button class="uploadBTN" size="small" shape="round" color="primary" (click)="navigate()" fill="outline">
+      Details
+    </ion-button>
+  </div>
+
+  <ion-card *ngFor="let date of dates" (click)="bookDate(date)">
+    <ion-card-header>
+      <ion-card-title>{{date.date}}</ion-card-title>
+
+      <ion-fab vertical="top" horizontal="end" class="fab">
+        <ion-row>
+          <ion-col>
+            <ion-fab-button (click)="deleteDate(date.id,date.booked) ; $event.stopPropagation();" color="light"
+              class="fabBTN">
+              <ion-icon name="trash"></ion-icon>
+            </ion-fab-button>
+          </ion-col>
+          <ion-col>
+            <ion-fab-button (click)="getDetails(date) ; $event.stopPropagation();" color="light"
+              class="fabBTN">
+              <ion-icon name="alert"></ion-icon>
+            </ion-fab-button>
+          </ion-col>
+
+        </ion-row>
+      </ion-fab>
+
+      <ion-card-subtitle>{{date.start}} to {{date.end}}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-label></ion-label>
+      <ion-label>No of appoinments {{date.booked}}/{{date.appoinments}}</ion-label>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

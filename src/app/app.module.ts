@@ -29,6 +29,8 @@ import { FileTransfer} from '@ionic-native/file-transfer/ngx';
 
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { IonicStorageModule } from '@ionic/storage';
+import { DatePicker } from '@ionic-native/date-picker/ngx';
+import { CallNumber } from '@ionic-native/call-number/ngx';
 //import { ImageFilterPipe } from './pipes/image-filter.pipe';
 
 
@@ -65,6 +67,8 @@ import { IonicStorageModule } from '@ionic/storage';
     ImagePicker,
     FileTransfer,
     SocialSharing,
+    DatePicker,
+    CallNumber
   ],
   bootstrap: [AppComponent]
 })

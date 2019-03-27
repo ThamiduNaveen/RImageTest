@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Date details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <h5>Details :</h5>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{date.date}}</ion-card-title>
+      <ion-card-subtitle>{{date.start}} to {{date.end}}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-label></ion-label>
+      <ion-label>No of appoinments {{date.booked}}/{{date.appoinments}}</ion-label>
+    </ion-card-content>
+  </ion-card>
+  <h5>Bookings :</h5>
+
+  <ion-card *ngFor="let d of dates" >
+    <ion-card-header>
+      <ion-card-title>{{d.name}}</ion-card-title>
+      <ion-card-subtitle>{{d.district}}</ion-card-subtitle>
+      <ion-fab vertical="top" horizontal="end" class="fab">
+          <ion-row>
+            <ion-col>
+              <ion-fab-button (click)="deleteBook(d.bookId) ; $event.stopPropagation();" color="light"
+                class="fabBTN">
+                <ion-icon name="trash"></ion-icon>
+              </ion-fab-button>
+            </ion-col>
+            <ion-col>
+              <ion-fab-button (click)="call(d.telephone) ; $event.stopPropagation();" color="light"
+                class="fabBTN">
+                <ion-icon name="call"></ion-icon>
+              </ion-fab-button>
+            </ion-col>
+  
+          </ion-row>
+        </ion-fab>
+    </ion-card-header>
+    <ion-card-content no-padding>
+      <ion-list>
+        <ion-item>
+          <ion-label>Birthday : {{d.birthday}}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>Contact : {{d.telephone}}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>No : {{d.appoinmentNo}}</ion-label>
+        </ion-item>
+      </ion-list>
+
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
